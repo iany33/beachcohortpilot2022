@@ -1,0 +1,94 @@
+---
+title: "Beach Cohort Toronto - Bayesian analysis"
+output: html_notebook
+---
+
+Build multi-level regression model for Toronto Beach Cohort study data under Bayesian framework using the brms package.
+
+Load packages:
+
+```{r}
+pacman::p_load(
+  rio,          # File import
+  skimr,        # get overview of data
+  tidyverse,    # data management + ggplot2 graphics, 
+  brms,          # Bayesian multi-level regression modelling
+  bayesplot,     # Check brms diagnostics
+  loo,           # Model comparisons with loo and waic criteria
+  DHARMa        # diagnostics - can be used with brms = https://frodriguezsanchez.net/post/using-dharma-to-check-bayesian-models-fitted-with-brms/
+)
+
+data <- import("G:/My Drive/Research/Projects-TMU/Beach water illness/Toronto pilot study/Analysis/data-test.xlsx")
+data <- data |> mutate(age1 = as.factor(age1))
+```
+
+Build initial model framework with 3-level predictor of interest (primary, secondary, vs. no water contact) and two essential confounders (age and gender).
+
+Use generic weakly informative prior for intercept and confounders: https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations
+
+Use informative priors for the water contact variable based on prior research - Russo 2020 SR-MA and Health Canada review of literature/guidelines. I.e. swimming risk likely ~4 times higher than secondary/minimal contact risk, the latter has more variability due to less studies. 
+
+First conduct prior predictive simulation using brms with sample_prior "only" option.
+
+```{r}
+get_prior(agi ~ 0 + Intercept + contact_level + gender + age1 + (1 | houseID),
+  family = bernoulli, data = data)
+
+m1 <- brm(agi ~ 0 + Intercept + contact_level + gender + age1 + (1 | houseID),
+  family = bernoulli, data = data, 
+  prior = c(prior(normal(0, 2), class = "b"), 
+            prior(normal(0.8, 0.4), class = "b", coef = "contact_levelPrimary"),             prior(normal(0.2, 0.4), class = "b", coef = "contact_levelSecondary")),
+  iter = 2000, warmup = 1000, chains = 4, cores = 2, seed = 11, sample_prior = "only")
+
+pp_check(m1)
+
+```
+
+Then assess and run model with selected priors.
+
+```{r}
+prior <- c(set_prior("normal(0, 2)", class = "b"),
+           set_prior("normal(0.8, 0.4)", class = "b", coef = "contact_levelPrimary"),
+           set_prior("normal(0.2, 0.4)", class = "b", coef = "contact_levelSecondary"))
+
+model1 <- brm(agi ~ 0 + Intercept + contact_level + gender + age1 + (1 | houseID),
+  family = bernoulli, data = data, pior = prior,
+  iter = 2000, warmup = 1000, chains = 4, cores = 4, seed = 11)
+
+summary(model1, waic=TRUE)
+```
+
+Examine trace plots and posterior distribution checks.
+
+```{r}
+plot(model1)
+mcmc_plot(model1)
+pp_check(model1)
+pp_check(model1, type = "loo_pit")
+conditional_effects(model1)
+```
+
+Update and compare model with additional random effect for recruitment day
+
+```{r}
+model2 <- update(model1, formula. = ~ . - (1 | houseID) + (1 | houseID/date))
+
+summary(model2, waic=TRUE)
+loo(model1, model2)
+```
+
+Choose one of two models above to build as framework model with additional confounders. Other sociodemogaphics: income; education; location of residence (e.g. Ontario vs. other?); ethnicity. Possible confounders for AGI: chronic conditions; sand contact; consumed food; contact with algae, swam in past 14 days.
+
+Build separate AGI models with E. coli levels as predictor and other environmental variables (48-hr rainfall, air temp? wave height? streamflow? UV index?)
+
+Build models for other health outcomes (ear, eye, respiratory, and skin infections).
+
+
+
+
+
+
+
+
+
+
