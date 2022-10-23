@@ -3,6 +3,7 @@ pacman::p_load(
   rio,          # File import
   here,         # File locator
   skimr,        # get overview of data
+  Matrix,
   tidyverse,    # data management + ggplot2 graphics, 
   gtsummary,    # summary statistics and tests
   rstatix,      # statistics
@@ -133,6 +134,65 @@ data <- data %>%
     TRUE ~ 0)) %>%
   mutate(diarrhea = as.numeric(diarrhea))
 
+# Create Yes/No versions of outcome variables
+
+data <- data %>% mutate(agi2 = case_when(agi == 1 ~ "Yes", TRUE ~ "No")) %>% 
+  mutate(agi2 = as.factor(agi2))
+
+data <- data %>% mutate(respiratory2 = case_when(respiratory == 1 ~ "Yes", TRUE ~ "No")) %>% 
+  mutate(respiratory2 = as.factor(respiratory2))
+
+data <- data %>% mutate(eye_infection2 = case_when(eye_infection == 1 ~ "Yes", TRUE ~ "No")) %>% 
+  mutate(eye_infection2 = as.factor(eye_infection2))
+
+data <- data %>% mutate(ear_infection2 = case_when(ear_infection == 1 ~ "Yes", TRUE ~ "No")) %>% 
+  mutate(ear_infection2 = as.factor(ear_infection2))
+
+data <- data %>% mutate(skin_infection2 = case_when(skin_infection == 1 ~ "Yes", TRUE ~ "No")) %>% 
+  mutate(skin_infection2 = as.factor(skin_infection2))
+
+data <- data %>% mutate(diarrhea2 = case_when(diarrhea == 1 ~ "Yes", TRUE ~ "No")) %>% 
+  mutate(diarrhea2 = as.factor(diarrhea2))
+
+# Create outcome versions that exclude those with same baseline symptoms
+
+data <- data %>% 
+  mutate(agi3 = case_when(
+    (agi == 1 & base_agi == 0) ~ "Yes",
+    TRUE ~ "No")) %>%
+  mutate(agi3 = as.factor(agi3))
+
+data <- data %>% 
+  mutate(respiratory3 = case_when(
+    (respiratory == 1 & base_resp == 0) ~ "Yes",
+    TRUE ~ "No")) %>%
+  mutate(respiratory3 = as.factor(respiratory3))
+
+data <- data %>% 
+  mutate(skin_infection3 = case_when(
+    (skin_infection == 1 & base_skin == 0) ~ "Yes",
+    TRUE ~ "No")) %>%
+  mutate(skin_infection3 = as.factor(skin_infection3))
+
+data <- data %>% 
+  mutate(ear_infection3 = case_when(
+    (ear_infection == 1 & base_ear == 0) ~ "Yes",
+    TRUE ~ "No")) %>%
+  mutate(ear_infection3 = as.factor(ear_infection3))
+
+data <- data %>% 
+  mutate(eye_infection3 = case_when(
+    (eye_infection == 1 & base_eye == 0) ~ "Yes",
+    TRUE ~ "No")) %>%
+  mutate(eye_infection3 = as.factor(eye_infection3))
+
+data <- data %>% 
+  mutate(diarrhea3 = case_when(
+    (diarrhea == 1 & base_symp_diar == 0) ~ "Yes",
+    TRUE ~ "No")) %>%
+  mutate(diarrhea3 = as.factor(diarrhea3))
+
+
 
 # Convert various variables from text and NA to 1/0 entries
 
@@ -154,32 +214,32 @@ data <- data %>% mutate(cond_immune = case_when(cond_immune == "immune" ~ "Yes",
 data <- data %>% mutate(cond_none = case_when(cond_none == "none" ~ "Yes", TRUE ~ "No")) %>%
   mutate(cond_none = as.factor(cond_none))
 
-data <- data %>% mutate(ethnicity_arab = case_when(ethnicity_arab == "arab" ~ "Yes", TRUE ~ "No")) %>%
-  mutate(ethnicity_arab = as.factor(ethnicity_arab))
+data <- data %>% mutate(eth_arab = case_when(ethnicity_arab == "arab" ~ "Yes", TRUE ~ "No")) %>%
+  mutate(eth_arab = as.factor(eth_arab))
 
-data <- data %>% mutate(ethnicity_black = case_when(ethnicity_black == "black" ~ "Yes", TRUE ~ "No")) %>%
-  mutate(ethnicity_black = as.factor(ethnicity_black))
+data <- data %>% mutate(eth_black = case_when(ethnicity_black == "black" ~ "Yes", TRUE ~ "No")) %>%
+  mutate(eth_black = as.factor(eth_black))
 
-data <- data %>% mutate(ethnicity_east_asian = case_when(ethnicity_east_asian == "east_asian" ~ "Yes", TRUE ~ "No")) %>%
-  mutate(ethnicity_east_asian = as.factor(ethnicity_east_asian))
+data <- data %>% mutate(eth_east_asian = case_when(ethnicity_east_asian == "east_asian" ~ "Yes", TRUE ~ "No")) %>%
+  mutate(eth_east_asian = as.factor(eth_east_asian))
 
-data <- data %>% mutate(ethnicity_indigenous = case_when(ethnicity_indigenous == "indigenous" ~ "Yes", TRUE ~ "No")) %>%
-  mutate(ethnicity_indigenous = as.factor(ethnicity_indigenous))
+data <- data %>% mutate(eth_indigenous = case_when(ethnicity_indigenous == "indigenous" ~ "Yes", TRUE ~ "No")) %>%
+  mutate(eth_indigenous = as.factor(eth_indigenous))
 
-data <- data %>% mutate(ethnicity_latin = case_when(ethnicity_latin == "latin" ~ "Yes", TRUE ~ "No")) %>%
-  mutate(ethnicity_latin = as.factor(ethnicity_latin))
+data <- data %>% mutate(eth_latin = case_when(ethnicity_latin == "latin" ~ "Yes", TRUE ~ "No")) %>%
+  mutate(eth_latin = as.factor(eth_latin))
 
-data <- data %>% mutate(ethnicity_south_asian = case_when(ethnicity_south_asian == "south_asian" ~ "Yes", TRUE ~ "No")) %>%
-  mutate(ethnicity_south_asian = as.factor(ethnicity_south_asian))
+data <- data %>% mutate(eth_south_asian = case_when(ethnicity_south_asian == "south_asian" ~ "Yes", TRUE ~ "No")) %>%
+  mutate(eth_south_asian = as.factor(eth_south_asian))
 
-data <- data %>% mutate(ethnicity_se_asian = case_when(ethnicity_se_asian == "se_asian" ~ "Yes", TRUE ~ "No")) %>%
-  mutate(ethnicity_se_asian = as.factor(ethnicity_se_asian))
+data <- data %>% mutate(eth_se_asian = case_when(ethnicity_se_asian == "southeast_asian" ~ "Yes", TRUE ~ "No")) %>%
+  mutate(eth_se_asian = as.factor(eth_se_asian))
 
-data <- data %>% mutate(ethnicity_white = case_when(ethnicity_white == "white" ~ "Yes", TRUE ~ "No")) %>%
-  mutate(ethnicity_white = as.factor(ethnicity_white))
+data <- data %>% mutate(eth_white = case_when(ethnicity_white == "white" ~ "Yes", TRUE ~ "No")) %>%
+  mutate(eth_white = as.factor(eth_white))
 
-data <- data %>% mutate(ethnicity_other = case_when(ethnicity_other == "other" ~ "Yes", TRUE ~ "No")) %>%
-  mutate(ethnicity_other = as.factor(ethnicity_other))
+data <- data %>% mutate(eth_other = case_when(ethnicity_other == "other_eth" ~ "Yes", TRUE ~ "No")) %>%
+  mutate(eth_other = as.factor(eth_other))
 
 data <- data %>% mutate(prev_act1 = case_when(prev_act1 == 1 ~ "Yes", prev_act1 == "NA" ~ NA_character_, TRUE ~ "No")) %>%
   mutate(prev_act1 = as.factor(prev_act1))
@@ -296,6 +356,15 @@ data <- data %>%
   mutate(education2 = fct_relevel(education2, "high school or less", "college/trades", "bachelors", "post-graduate"))
 
 data <- data %>% 
+  mutate(income2 = case_when(
+    (income == "<20,000" | income == "20000-39999") ~ "<40,000",
+    (income == "40000-59999" | income == "60000-79999") ~ "40,000-79,999",
+    (income == "80000-99999" | income == "100000-149999") ~ "80,000-149,999",
+    income == "150000+" ~ "150,000+",
+    TRUE ~ NA_character_))  %>%
+  mutate(income2 = fct_relevel(income2, "<40,000", "40,000-79,999", "80,000-149,999", "150,000+"))
+
+data <- data %>% 
   mutate(gender = case_when(
     ((gender1 == "woman" | gender1 == "girl") & sex1 == "female") ~ "woman/girl",
     ((gender1 == "man" | gender1 == "boy") & sex1 == "male") ~ "man/boy",
@@ -311,41 +380,60 @@ data$age1 <- factor(data$age1, exclude = "NA")
 data <- data %>% mutate(income = as.factor(income))
 data$income <- factor(data$income, exclude = "NA")
 
-
-# Create primary and secondary contact variables
+data <- data %>% 
+  mutate(age2 = case_when(
+    (age1 == "0-4" | age1 == "5-9" | age1 == "10-14") ~ "0-14",
+    age1 == "15-19" ~ "15-19",
+    age1 == "20-39" ~ "20-39",
+    (age1 == "40-59" | age1 == "60+") ~ "40+",
+    TRUE ~ NA_character_))  %>%
+  mutate(age2 = fct_relevel(age2, "0-14", "15-19", "20-39", "40+"))
 
 data <- data %>% 
-  mutate(prim_contact = case_when(
-    water_act_swim == "swim" ~ 1,
-    water_act_surf == "surf" ~ 1,
-    water_act_kite == "kite" ~ 1,
-    water_act_wind == "wind" ~ 1,
-    water_act_wake == "wake" ~ 1,
-    water_act_ski == "ski" ~ 1,
-    water_act_snorkel == "snorkel" ~ 1,
-    water_act_dive == "dive" ~ 1,
-    TRUE ~ 0)) %>%
-  mutate(prim_contact = as.numeric(prim_contact))
+  mutate(age3 = case_when(
+    (age1 == "0-4" | age1 == "5-9" | age1 == "10-14") ~ "0-14",
+    (age1 == "15-19" | age1 == "20-39" | age1 == "40-59" | age1 == "60+") ~ "15+",   
+    TRUE ~ NA_character_))  %>%
+  mutate(age3 = as.factor(age3)) %>%
+  mutate(age3 = fct_relevel(age3, "15+", "0-14"))
 
 data <- data %>% 
-  mutate(sec_contact = case_when(
-    water_act_wade == "wade" ~ 1,
-    water_act_sail == "sail" ~ 1,
-    water_act_boat == "boat" ~ 1,
-    water_act_fish == "fish" ~ 1,
-    water_act_canoe == "canoe" ~ 1,
-    water_act_kayak == "kayak" ~ 1,
-    water_act_paddle == "paddle" ~ 1,
-    water_act_row == "row" ~ 1,
-    TRUE ~ 0)) %>%
-  mutate(sec_contact = as.numeric(sec_contact))
+  mutate(ethnicity = case_when(
+    ethnicity_other == "other_eth" ~ "Multiple ethnicities",
+    (eth_white == "Yes" & (eth_south_asian == "Yes" | eth_arab == "Yes" | eth_se_asian == "Yes" | 
+                             eth_east_asian == "Yes" | eth_black == "Yes" | 
+                             eth_latin == "Yes" | eth_indigenous == "Yes")) ~ "Multiple ethnicities",
+    (eth_arab == "Yes" & (eth_south_asian == "Yes" | eth_se_asian == "Yes" | 
+                             eth_east_asian == "Yes" | eth_black == "Yes" | 
+                             eth_latin == "Yes" | eth_indigenous == "Yes")) ~ "Multiple ethnicities",
+    eth_white == "Yes" ~ "White",
+    eth_south_asian == "Yes" ~ "South Asian",
+    eth_se_asian == "Yes" ~ "Southeast Asian",
+    eth_arab == "Yes" ~ "Arab",
+    eth_east_asian == "Yes" ~ "East Asian",
+    eth_black == "Yes" ~ "Black",
+    eth_latin == "Yes" ~ "Latin",
+    eth_indigenous == "Yes" ~ "Indigenous",
+    TRUE ~ NA_character_)) 
+
+data %>% tabyl(ethnicity)  
+    
+
+# Create water sports and other minimal contact variables
 
 data <- data %>% 
-  mutate(contact_level = case_when(
-    prim_contact == 1 ~ "Primary",
-    sec_contact == 1 ~ "Secondary",
-    TRUE ~ "None")) %>%
-  mutate(contact_level = as.factor(contact_level))
+  mutate(water_sports = case_when(
+    (water_act_surf == "Yes" | water_act_kite == "Yes" | water_act_wind == "Yes" | water_act_wake == "Yes" | 
+       water_act_ski == "Yes" | water_act_snorkel == "Yes" | water_act_dive == "Yes") ~ "Yes",
+    TRUE ~ "No")) %>%
+  mutate(prim_contact = as.factor(water_sports))
+
+data <- data %>% 
+  mutate(minimal_contact = case_when(
+    (water_act_sail == "Yes" | water_act_boat == "Yes" | water_act_fish == "Yes" | 
+       water_act_canoe == "Yes" | water_act_kayak == "Yes" | water_act_row == "Yes") ~ "Yes",
+    TRUE ~ "No")) %>%
+  mutate(minimal_contact = as.factor(minimal_contact))
 
 
 # Define sand contact as only digging or burying - excluding others like tanning, laying in sand
@@ -357,10 +445,10 @@ data <- data %>%
   mutate(sand_contact = as.factor(sand_contact))
 
 
-# Save dataset to load in further analyses
+# Create log E. coli variable
 
-export(data, "~/R/.RData")
-save.image("~/R/.RData")
+data <- data %>% 
+  mutate(log_ecoli =  log(e_coli))
 
 
 

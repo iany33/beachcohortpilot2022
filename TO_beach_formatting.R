@@ -3,6 +3,7 @@ pacman::p_load(
   rio,          # File import
   here,         # File locator
   skimr,        # get overview of data
+  Matrix,
   tidyverse,    # data management + ggplot2 graphics, 
   gtsummary,    # summary statistics and tests
   rstatix,      # statistics
@@ -231,34 +232,34 @@ follow <- follow %>%
   unite(name, c("fname", "lname"), sep=" ") %>% 
   unite(name1, c("name", "name2", "name3", "name4", "name5", "name6"), sep=",") %>% 
   unite(rec_act1, c("rec_act", "rec_act2", "rec_act3", "rec_act4", "rec_act5", "rec_act6"), sep=",") %>% 
-  unite(symptoms_diar, c("symptomsdiarrhea", "symptoms2diarrhea", "symptoms3diarrhea", "symptoms4diarrhea", "symptoms5diarrhea", "symptoms6diarrhea"), sep=",") %>% 
-  unite(symptoms_vomit, c("symptomsvomiting", "symptoms2vomiting", "symptoms3vomiting", "symptoms4vomiting", "symptoms5vomiting", "symptoms6vomiting"), sep=",") %>% 
-  unite(symptoms_cramps, c("symptomscramps", "symptoms2cramps", "symptoms3cramps", "symptoms4cramps", "symptoms5cramps", "symptoms6cramps"), sep=",") %>% 
-  unite(symptoms_naus, c("symptomsnausea", "symptoms2nausea", "symptoms3nausea", "symptoms4nausea", "symptoms5nausea", "symptoms6nausea"), sep=",") %>% 
-  unite(symptoms_fever, c("symptomsfever", "symptoms2fever", "symptoms3fever", "symptoms4fever", "symptoms5fever", "symptoms6fever"), sep=",") %>% 
-  unite(symptoms_throat, c("symptomsthroat", "symptoms2throat", "symptoms3throat", "symptoms4throat", "symptoms5throat", "symptoms6throat"), sep=",") %>% 
-  unite(symptoms_nose, c("symptomsnose", "symptoms2nose", "symptoms3nose", "symptoms4nose", "symptoms5nose", "symptoms6nose"), sep=",") %>% 
-  unite(symptoms_cough, c("symptomscough", "symptoms2cough", "symptoms3cough", "symptoms4cough", "symptoms5cough","symptoms6cough"), sep=",") %>% 
-  unite(symptoms_ear, c("symptomsear", "symptoms2ear", "symptoms3ear", "symptoms4ear", "symptoms5ear", "symptoms6ear"), sep=",") %>% 
-  unite(symptoms_eye, c("symptomseye", "symptoms2eye", "symptoms3eye", "symptoms4eye", "symptoms5eye", "symptoms6eye"), sep=",") %>% 
-  unite(symptoms_rash, c("symptomsrash", "symptoms2rash", "symptoms3rash", "symptoms4rash", "symptoms5rash", "symptoms6rash"), sep=",") %>% 
-  unite(symptoms_none, c("symptomsnone", "symptoms2none", "symptoms3none", "symptoms4none", "symptoms5none", "symptoms6none"), sep=",") %>% 
-  unite(symp_date_diar, c("symp_datediarrheadate", "symp_date2diarrheadate", "symp_date3diarrheadate", "symp_date4diarrheadate", "symp_date5diarrheadate","symp_date6diarrheadate"), sep=",") %>% 
-  unite(symp_date_vomit, c("symp_datevomitingdate", "symp_date2vomitingdate", "symp_date3vomitingdate", "symp_date4vomitingdate", "symp_date5vomitingdate", "symp_date6vomitingdate"), sep=",") %>% 
-  unite(symp_date_cramps, c("symp_datecrampsdate", "symp_date2crampsdate", "symp_date3crampsdate", "symp_date4crampsdate", "symp_date5crampsdate", "symp_date6crampsdate"), sep=",") %>% 
-  unite(symp_date_naus, c("symp_datenauseadate", "symp_date2nauseadate", "symp_date3nauseadate", "symp_date4nauseadate", "symp_date5nauseadate", "symp_date6nauseadate"), sep=",") %>% 
-  unite(symp_date_fever, c("symp_datefeverdate", "symp_date2feverdate", "symp_date3feverdate", "symp_date4feverdate", "symp_date5feverdate", "symp_date6feverdate"), sep=",") %>% 
-  unite(symp_date_throat, c("symp_datethroatdate", "symp_date2throatdate", "symp_date3throatdate", "symp_date4throatdate", "symp_date5throatdate", "symp_date6throatdate"), sep=",") %>% 
-  unite(symp_date_nose, c("symp_datenosedate", "symp_date2nosedate", "symp_date3nosedate", "symp_date4nosedate", "symp_date5nosedate", "symp_date6nosedate"), sep=",") %>% 
-  unite(symp_date_cough, c("symp_datecoughdate", "symp_date2coughdate", "symp_date3coughdate", "symp_date4coughdate", "symp_date5coughdate", "symp_date6coughdate"), sep=",") %>% 
-  unite(symp_date_ear, c("symp_dateeardate", "symp_date2eardate", "symp_date3eardate", "symp_date4eardate", "symp_date5eardate", "symp_date6eardate"), sep=",") %>% 
-  unite(symp_date_eye, c("symp_dateeyedate", "symp_date2eyedate", "symp_date3eyedate", "symp_date4eyedate", "symp_date5eyedate", "symp_date6eyedate"), sep=",") %>% 
-  unite(symp_date_rash, c("symp_daterashdate", "symp_date2rashdate", "symp_date3rashdate", "symp_date4rashdate", "symp_date5rashdate", "symp_date6rashdate"), sep=",") %>% 
+  unite(symptoms_diar, c("symptoms_diarrhea", "symptoms2_diarrhea", "symptoms3_diarrhea", "symptoms4_diarrhea", "symptoms5_diarrhea", "symptoms6_diarrhea"), sep=",") %>% 
+  unite(symptoms_vomit, c("symptoms_vomiting", "symptoms2_vomiting", "symptoms3_vomiting", "symptoms4_vomiting", "symptoms5_vomiting", "symptoms6_vomiting"), sep=",") %>% 
+  unite(symptoms_cramps, c("symptoms_cramps", "symptoms2_cramps", "symptoms3_cramps", "symptoms4_cramps", "symptoms5_cramps", "symptoms6_cramps"), sep=",") %>% 
+  unite(symptoms_naus, c("symptoms_nausea", "symptoms2_nausea", "symptoms3_nausea", "symptoms4_nausea", "symptoms5_nausea", "symptoms6_nausea"), sep=",") %>% 
+  unite(symptoms_fever, c("symptoms_fever", "symptoms2_fever", "symptoms3_fever", "symptoms4_fever", "symptoms5_fever", "symptoms6_fever"), sep=",") %>% 
+  unite(symptoms_throat, c("symptoms_throat", "symptoms2_throat", "symptoms3_throat", "symptoms4_throat", "symptoms5_throat", "symptoms6_throat"), sep=",") %>% 
+  unite(symptoms_nose, c("symptoms_nose", "symptoms2_nose", "symptoms3_nose", "symptoms4_nose", "symptoms5_nose", "symptoms6_nose"), sep=",") %>% 
+  unite(symptoms_cough, c("symptoms_cough", "symptoms2_cough", "symptoms3_cough", "symptoms4_cough", "symptoms5_cough","symptoms6_cough"), sep=",") %>% 
+  unite(symptoms_ear, c("symptoms_ear", "symptoms2_ear", "symptoms3_ear", "symptoms4_ear", "symptoms5_ear", "symptoms6_ear"), sep=",") %>% 
+  unite(symptoms_eye, c("symptoms_eye", "symptoms2_eye", "symptoms3_eye", "symptoms4_eye", "symptoms5_eye", "symptoms6_eye"), sep=",") %>% 
+  unite(symptoms_rash, c("symptoms_rash", "symptoms2_rash", "symptoms3_rash", "symptoms4_rash", "symptoms5_rash", "symptoms6_rash"), sep=",") %>% 
+  unite(symptoms_none, c("symptoms_none", "symptoms2_none", "symptoms3_none", "symptoms4_none", "symptoms5_none", "symptoms6_none"), sep=",") %>% 
+  unite(symp_date_diar, c("symp_date_diarrhea_date", "symp_date2_diarrhea_date", "symp_date3_diarrhea_date", "symp_date4_diarrhea_date", "symp_date5_diarrhea_date","symp_date6_diarrhea_date"), sep=",") %>% 
+  unite(symp_date_vomit, c("symp_date_vomiting_date", "symp_date2_vomiting_date", "symp_date3_vomiting_date", "symp_date4_vomiting_date", "symp_date5_vomiting_date", "symp_date6_vomiting_date"), sep=",") %>% 
+  unite(symp_date_cramps, c("symp_date_cramps_date", "symp_date2_cramps_date", "symp_date3_cramps_date", "symp_date4_cramps_date", "symp_date5_cramps_date", "symp_date6_cramps_date"), sep=",") %>% 
+  unite(symp_date_naus, c("symp_date_nausea_date", "symp_date2_nausea_date", "symp_date3_nausea_date", "symp_date4_nausea_date", "symp_date5_nausea_date", "symp_date6_nausea_date"), sep=",") %>% 
+  unite(symp_date_fever, c("symp_date_fever_date", "symp_date2_fever_date", "symp_date3_fever_date", "symp_date4_fever_date", "symp_date5_fever_date", "symp_date6_fever_date"), sep=",") %>% 
+  unite(symp_date_throat, c("symp_date_throat_date", "symp_date2_throat_date", "symp_date3_throat_date", "symp_date4_throat_date", "symp_date5_throat_date", "symp_date6_throat_date"), sep=",") %>% 
+  unite(symp_date_nose, c("symp_date_nose_date", "symp_date2_nose_date", "symp_date3_nose_date", "symp_date4_nose_date", "symp_date5_nose_date", "symp_date6_nose_date"), sep=",") %>% 
+  unite(symp_date_cough, c("symp_date_cough_date", "symp_date2_cough_date", "symp_date3_cough_date", "symp_date4_cough_date", "symp_date5_cough_date", "symp_date6_cough_date"), sep=",") %>% 
+  unite(symp_date_ear, c("symp_date_ear_date", "symp_date2_ear_date", "symp_date3_ear_date", "symp_date4_ear_date", "symp_date5_ear_date", "symp_date6_ear_date"), sep=",") %>% 
+  unite(symp_date_eye, c("symp_date_eye_date", "symp_date2_eye_date", "symp_date3_eye_date", "symp_date4_eye_date", "symp_date5_eye_date", "symp_date6_eye_date"), sep=",") %>% 
+  unite(symp_date_rash, c("symp_date_rash_date", "symp_date2_rash_date", "symp_date3_rash_date", "symp_date4_rash_date", "symp_date5_rash_date", "symp_date6_rash_date"), sep=",") %>% 
   unite(misswork, c("misswork", "misswork2", "misswork3", "misswork4", "misswork5", "misswork6"), sep=",") %>% 
-  unite(misswork_days, c("misswork1", "misswork21", "misswork31", "misswork41", "misswork51", "misswork61"), sep=",") %>% 
-  unite(med_antibiotics, c("medicationantibiotics", "medication2antibiotics", "medication3antibiotics", "medication4antibiotics", "medications5antibiotics", "medication6antibiotics"), sep=",") %>% 
-  unite(med_otc, c("medication_otc_drugs", "medication2otc_drugs", "medication3otc_drugs", "medication4otc_drugs", "medications5otc_drugs", "medication6otc_drugs"), sep=",") %>% 
-  unite(med_none, c("medicationnone", "medication2none", "medication3none", "medication4none", "medications5none", "medication6none"), sep=",")  %>% 
+  unite(misswork_days, c("misswork_1", "misswork2_1", "misswork3_1", "misswork4_1", "misswork5_1", "misswork6_1"), sep=",") %>% 
+  unite(med_antibiotics, c("medication_antibiotics", "medication2_antibiotics", "medication3_antibiotics", "medication4_antibiotics", "medications5_antibiotics", "medication6_antibiotics"), sep=",") %>% 
+  unite(med_otc, c("medication_otc_drugs", "medication2_otc_drugs", "medication3_otc_drugs", "medication4_otc_drugs", "medications5_otc_drugs", "medication6_otc_drugs"), sep=",") %>% 
+  unite(med_none, c("medication_none", "medication2_none", "medication3_none", "medication4_none", "medications5_none", "medication6_none"), sep=",")  %>% 
   unite(healthcare1, c("healthcare", "healthcare2", "healthcare3", "healthcare4", "healthcare5", "healthcare6"), sep=",")  %>%
   unite(emergency, c("ed_visit", "ed_visit2", "ed_visit3", "ed_visit4", "ed_visit5", "ed_visit6"), sep=",")  %>%
   unite(hospital, c("hospitalized", "hospitalized2", "hospitalized3", "hospitalized4", "hospitalized5", "hospitalized6"), sep=",") %>%
@@ -283,7 +284,7 @@ pacman::p_load(data.table)
 
 beach_separate <- left_join(entrance, exit, by = "name1")
 
-beach_separate <- beach_separate %>% 
+beach_separate <- beach_separate %>%
   rename(house_id = internal_id.x) %>% 
   rename(date = submitted_date.x) 
 
@@ -296,6 +297,16 @@ beach <- beach %>%
 beach_surveys <- rbindlist(list(beach, beach_separate), fill=TRUE) 
 
 survey_data <- left_join(beach_surveys, follow, by = "name1")
+
+
+# Check for duplicate names
+survey_data %>% group_by(name1) %>% filter(n()>1) 
+
+
+## Check for any follow-up participants that did not match to beach participants
+
+follow %>% anti_join(beach_surveys, by = "name1")
+investigate <- follow %>% anti_join(beach_surveys, by = "name1")
 
 
 ## Merge E. coli data
@@ -332,6 +343,7 @@ survey_data <- survey_data %>%
 
 data <- subset(survey_data, select = -c(email.x, email.y, phone))
 
-save.image("~/R/.RData")
+remove(beach, beach_separate, beach_surveys, entrance, exit, follow, investigate, survey_data)
+
 
 
